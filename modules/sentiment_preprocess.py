@@ -46,15 +46,12 @@ def load_lexicon():
 # Load lexicon saat script pertama kali dijalankan
 lexicon_positive, lexicon_negative = load_lexicon()
 
-
 # Fungsi-fungsi Preprocessing
 def cleaning_data(df):
     return df.dropna(axis=0)
 
-
 def delete_duplicate(df):
     return df.drop_duplicates()
-
 
 def cleaning_text(text):
     if not isinstance(text, str):
@@ -69,20 +66,16 @@ def cleaning_text(text):
     text = text.strip()  # Trim whitespace
     return text
 
-
 def case_folding(text):
     return text.lower() if isinstance(text, str) else text
-
 
 def replace_slang_words(text, slangDict):
     words = text.split()
     cleaned_words = [slangDict.get(word.lower(), word) for word in words]
     return ' '.join(cleaned_words)
 
-
 def tokenize_word(text):
     return word_tokenize(text) if isinstance(text, str) else []
-
 
 def stopword_removal(text):
     stopwords_id = set(stopwords.words('indonesian'))
@@ -91,7 +84,6 @@ def stopword_removal(text):
 
     return [word for word in text if word not in stopwords_all]
 
-
 def sentiment_analysis_lexicon_indonesia(text):
     score = 0
     for word in text:
@@ -99,7 +91,6 @@ def sentiment_analysis_lexicon_indonesia(text):
             score += lexicon_positive[word]
         if word in lexicon_negative:
             score -= lexicon_negative[word]  # Negatif harus dikurangkan!
-
     if score >= 1:
         polarity = 'positive'
     elif score <= -1:
@@ -109,10 +100,8 @@ def sentiment_analysis_lexicon_indonesia(text):
 
     return score, polarity
 
-
 def to_sentence(words_list):
     return ' '.join(words_list) if isinstance(words_list, list) else ""
-
 
 # Fungsi utama untuk menjalankan preprocessing
 def preprocess_and_save(df, text_column='comment', label='polarity'):
@@ -120,6 +109,7 @@ def preprocess_and_save(df, text_column='comment', label='polarity'):
         print(f"❌ Kolom '{text_column}' tidak ditemukan dalam dataset!")
         return None
 
+    df = df.iloc[0:5000]
     df = df.dropna(subset=[text_column])
     df[text_column] = df[text_column].astype(str)  # Pastikan semua nilai diubah jadi string
 
