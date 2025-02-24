@@ -11,5 +11,5 @@ Username dicoding: faishal_ali
 | Solusi machine learning | Masalah ini menarik untuk dijadikan *case* dalam bidang analisis sentimen. Dengan pemisahan polaritas seperti positif, netral, dan negatif. Kita dapat mengetahui bagaimana netizen berkomentar pada fenomena ini. |
 | Metode pengolahan | Metode-metode pengolahan data yang dilakukan meliput *Data Cleaning*, *Data Preprocessing* (*Case Folding*, *Replace Slang Words*, *Stopword Removal*, dan lain-lain), EDA, *Modelling*, hingga *Evaluation*.  |
 | Arsitektur model | Arsitektur model yang digunakan yaitu *Neural Network* dengan *Bidirectional* LSTM pada Tensorflow. Dengan layer seperti embedding, Dense, serta Dropout yang dibungkus di dalam Sequentials |
-| Metrik evaluasi | Metrik evaluasi yang digunakan yaitu seperti *train* dan *validation accuracy*, serta *train* dan *validation loss*|
+| Metrik evaluasi | Metrik evaluasi yang digunakan yaitu seperti *train* dan *validation accuracy*, serta *train* dan *validation loss*. Selain itu, juga menerapkan metrik lain seperti *precision*, *recall*, AUC, serta *categorical accuracy* |
 | Performa model | Deksripsi performa model yang dibuat |
