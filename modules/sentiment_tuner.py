@@ -103,6 +103,8 @@ def tuner_fn(fn_args: FnArgs) -> TunerFnResult:
         directory=fn_args.working_dir,
         project_name="sentiment_tuning"
     )
+    
+    tuner.oracle.max_trials = tuner.oracle.max_trials or 10  # Misalkan default 10
 
     train_set = input_fn(fn_args.train_files, tf_transform_output, num_epochs=10)
     val_set = input_fn(fn_args.eval_files, tf_transform_output, num_epochs=10)

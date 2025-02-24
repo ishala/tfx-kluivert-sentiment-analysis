@@ -130,6 +130,7 @@ def preprocess_and_save(df, text_column='comment', label='polarity'):
     df[label] = label_encoder.fit_transform(df[label])
     # ambil hanya komentar dan label
     df = df[[text_column, label]]
+    df[label] = df[label].astype('category').cat.codes
     
     # Simpan hasil preprocessing
     os.makedirs(os.path.dirname(PATH_PROCESSED_DATA), exist_ok=True)
