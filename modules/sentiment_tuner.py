@@ -11,9 +11,10 @@ TunerFnResult = namedtuple('TunerFnResult', ['tuner', 'fit_kwargs'])
 LABEL_KEY = "polarity"
 FEATURE_KEY = "comment"
 MAX_SEQUENCE_LENGTH = 200
-comb_embedding = [32, 128]
+comb_embedding = [32, 64, 128]
 comb_lstm = [64, 128]
 comb_dropout = [0.3, 0.4]
+comb_dense = [32, 64]
     
 
 def transformed_name(key):
@@ -67,18 +68,20 @@ def model_builder(hp, tf_transform_output):
     embedding_dim = hp.Choice('embedding_dim', comb_embedding)
     lstm_units = hp.Choice('lstm_units', comb_lstm)
     dropout_rate = hp.Choice('dropout_rate', comb_dropout)
+    dense_units = hp.Choice('dense_units', comb_dense)
     
     print("Embedding dim", embedding_dim)
     print("lstm units", lstm_units)
     print("dropout rate", dropout_rate)
+    print("dense units", dense_units)
 
     # Dapatkan vocab_size dari transform graph
-    vocab_size = get_vocab_size(tf_transform_output)  # Menggunakan vocab yang benar
+    vocab_size = get_vocab_size(tf_transform_output) 
 
     inputs = tf.keras.Input(shape=(MAX_SEQUENCE_LENGTH,), name=transformed_name(FEATURE_KEY), dtype=tf.int32)
     x = tf.keras.layers.Embedding(input_dim=vocab_size, output_dim=embedding_dim, input_length=MAX_SEQUENCE_LENGTH)(inputs)
     x = tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(lstm_units, return_sequences=False))(x)
-    x = tf.keras.layers.Dense(64, activation='relu')(x)
+    x = tf.keras.layers.Dense(dense_units, activation='relu')(x)
     x = tf.keras.layers.Dropout(dropout_rate)(x)
     outputs = tf.keras.layers.Dense(3, activation='softmax')(x)
 
