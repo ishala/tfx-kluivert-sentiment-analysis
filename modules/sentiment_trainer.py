@@ -63,16 +63,17 @@ def count_samples(file_patterns, tf_transform_output):
 
 def model_builder(tf_transform_output, hp):
     """Build LSTM-based model using tuned hyperparameters"""
-    vocab_size = get_vocab_size(tf_transform_output)  # Load vocab size dari transform
+    vocab_size = get_vocab_size(tf_transform_output)  
     embedding_dim = hp.get('embedding_dim', 128)
     lstm_units = hp.get('lstm_units', 128)
     dropout_rate = hp.get('dropout_rate', 0.5)
+    dense_units = hp.get('dense_units', 64)
     
     inputs = tf.keras.Input(shape=(MAX_SEQUENCE_LENGTH,), name=transformed_name(FEATURE_KEY), dtype=tf.int32)
     
     x = layers.Embedding(input_dim=vocab_size, output_dim=embedding_dim, input_length=MAX_SEQUENCE_LENGTH)(inputs)
     x = layers.Bidirectional(layers.LSTM(lstm_units, return_sequences=False))(x)
-    x = layers.Dense(64, activation='relu')(x)
+    x = layers.Dense(dense_units, activation='relu')(x)
     x = layers.Dropout(dropout_rate)(x)
     
     outputs = layers.Dense(3, activation='softmax')(x)
