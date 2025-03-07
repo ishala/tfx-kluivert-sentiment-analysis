@@ -7,6 +7,7 @@ __pycache__/
 *.so
 /faishal_ali-pipeline
 /serving_model_dir
+/outputs
 
 # Distribution / packaging
 .Python
