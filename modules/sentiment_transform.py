@@ -6,8 +6,10 @@ FEATURE_KEY = 'comment'
 LABEL_KEY = 'polarity'
 MAX_SEQUENCE_LENGTH = 200  # Pastikan konsisten dengan model
 
+
 def transformed_name(key):
     return key + "_xf"
+
 
 def preprocessing_fn(inputs):
     outputs = {}
@@ -31,10 +33,12 @@ def preprocessing_fn(inputs):
         constant_values=0
     )
 
-    comment_padded_fixed = tf.ensure_shape(comment_padded, [None, MAX_SEQUENCE_LENGTH])
+    comment_padded_fixed = tf.ensure_shape(
+        comment_padded, [None, MAX_SEQUENCE_LENGTH])
 
     # Simpan hasil preprocessing
     outputs[transformed_name(FEATURE_KEY)] = comment_padded_fixed
-    outputs[transformed_name(LABEL_KEY)] = tft.compute_and_apply_vocabulary(inputs[LABEL_KEY])
+    outputs[transformed_name(LABEL_KEY)] = tft.compute_and_apply_vocabulary(
+        inputs[LABEL_KEY])
 
     return outputs

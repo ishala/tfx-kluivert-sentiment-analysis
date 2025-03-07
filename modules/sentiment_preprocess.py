@@ -14,26 +14,35 @@ nltk.download('punkt')
 nltk.download('stopwords')
 
 # Inisiasi Variabel Path
-BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))  # Ambil root project
+BASE_DIR = os.path.abspath(
+    os.path.join(
+        os.path.dirname(__file__),
+        '..'))  # Ambil root project
 DATA_ROOT = os.path.join(BASE_DIR, 'data')  # Pastikan path selalu ke 'data'
 
 PATH_DATA_RAW = os.path.join(DATA_ROOT, 'raw_comments.csv')  # Path ke CSV
 
-PATH_PROCESSED_DATA = os.path.join(BASE_DIR, 'data', 'youtube-comments', 'processed_comments.csv')
+PATH_PROCESSED_DATA = os.path.join(
+    BASE_DIR,
+    'data',
+    'youtube-comments',
+    'processed_comments.csv')
 
 
 # Fungsi untuk Memuat Lexicon
 def load_lexicon():
     lexicon_positive, lexicon_negative = {}, {}
 
-    response = requests.get('https://raw.githubusercontent.com/angelmetanosaa/dataset/main/lexicon_positive.csv')
+    response = requests.get(
+        'https://raw.githubusercontent.com/angelmetanosaa/dataset/main/lexicon_positive.csv')
     if response.status_code == 200:
         reader = csv.reader(StringIO(response.text), delimiter=',')
         lexicon_positive = {row[0]: int(row[1]) for row in reader}
     else:
         print("❌ Failed to fetch positive lexicon data")
 
-    response = requests.get('https://raw.githubusercontent.com/angelmetanosaa/dataset/main/lexicon_negative.csv')
+    response = requests.get(
+        'https://raw.githubusercontent.com/angelmetanosaa/dataset/main/lexicon_negative.csv')
     if response.status_code == 200:
         reader = csv.reader(StringIO(response.text), delimiter=',')
         lexicon_negative = {row[0]: int(row[1]) for row in reader}
@@ -47,11 +56,15 @@ def load_lexicon():
 lexicon_positive, lexicon_negative = load_lexicon()
 
 # Fungsi-fungsi Preprocessing
+
+
 def cleaning_data(df):
     return df.dropna(axis=0)
 
+
 def delete_duplicate(df):
     return df.drop_duplicates()
+
 
 def cleaning_text(text):
     if not isinstance(text, str):
@@ -62,20 +75,28 @@ def cleaning_text(text):
     text = re.sub(r"http\S+", '', text)  # Menghapus link
     text = re.sub(r'[0-9]+', '', text)  # Menghapus angka
     text = re.sub(r'[^a-zA-Z\s]', '', text)  # Menghapus karakter non-alphabet
-    text = text.translate(str.maketrans('', '', string.punctuation))  # Menghapus tanda baca
+    text = text.translate(
+        str.maketrans(
+            '',
+            '',
+            string.punctuation))  # Menghapus tanda baca
     text = text.strip()  # Trim whitespace
     return text
 
+
 def case_folding(text):
     return text.lower() if isinstance(text, str) else text
+
 
 def replace_slang_words(text, slangDict):
     words = text.split()
     cleaned_words = [slangDict.get(word.lower(), word) for word in words]
     return ' '.join(cleaned_words)
 
+
 def tokenize_word(text):
     return word_tokenize(text) if isinstance(text, str) else []
+
 
 def stopword_removal(text):
     stopwords_id = set(stopwords.words('indonesian'))
@@ -83,6 +104,7 @@ def stopword_removal(text):
     stopwords_all = stopwords_id.union(stopwords_en)
 
     return [word for word in text if word not in stopwords_all]
+
 
 def sentiment_analysis_lexicon_indonesia(text):
     score = 0
@@ -100,10 +122,13 @@ def sentiment_analysis_lexicon_indonesia(text):
 
     return score, polarity
 
+
 def to_sentence(words_list):
     return ' '.join(words_list) if isinstance(words_list, list) else ""
 
 # Fungsi utama untuk menjalankan preprocessing
+
+
 def preprocess_and_save(df, text_column='comment', label='polarity'):
     if text_column not in df.columns:
         print(f"❌ Kolom '{text_column}' tidak ditemukan dalam dataset!")
@@ -111,7 +136,8 @@ def preprocess_and_save(df, text_column='comment', label='polarity'):
 
     df = df.iloc[0:5000]
     df = df.dropna(subset=[text_column])
-    df[text_column] = df[text_column].astype(str)  # Pastikan semua nilai diubah jadi string
+    # Pastikan semua nilai diubah jadi string
+    df[text_column] = df[text_column].astype(str)
 
     df[text_column] = df[text_column].apply(cleaning_text)
     df[text_column] = df[text_column].apply(case_folding)
@@ -131,10 +157,10 @@ def preprocess_and_save(df, text_column='comment', label='polarity'):
     # ambil hanya komentar dan label
     df = df[[text_column, label]]
     df[label] = df[label].astype('category').cat.codes
-    
+
     # Simpan hasil preprocessing
     os.makedirs(os.path.dirname(PATH_PROCESSED_DATA), exist_ok=True)
-    
+
     df.to_csv(PATH_PROCESSED_DATA, index=False)
     print(f"[INFO] Data tersimpan di {PATH_PROCESSED_DATA}")
 
