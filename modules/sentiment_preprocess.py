@@ -136,7 +136,7 @@ def preprocess_and_save(df, text_column='comment', label='polarity'):
     os.makedirs(os.path.dirname(PATH_PROCESSED_DATA), exist_ok=True)
     
     df.to_csv(PATH_PROCESSED_DATA, index=False)
-    print(f"✅ Data tersimpan di {PATH_PROCESSED_DATA}")
+    print(f"[INFO] Data tersimpan di {PATH_PROCESSED_DATA}")
 
     return df
 

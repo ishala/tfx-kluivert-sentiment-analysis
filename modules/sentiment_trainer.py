@@ -1,9 +1,9 @@
 import tensorflow as tf
 import tensorflow_transform as tft
-from tensorflow.keras import layers, models
+from tensorflow.keras import layers, models # type: ignore
 import os
 from tfx.components.trainer.fn_args_utils import FnArgs
-from tensorflow.keras.callbacks import Callback
+from tensorflow.keras.callbacks import Callback # type: ignore
 
 LABEL_KEY = "polarity"
 FEATURE_KEY = "comment"
@@ -63,6 +63,8 @@ def count_samples(file_patterns, tf_transform_output):
 
 def model_builder(tf_transform_output, hp):
     """Build LSTM-based model using tuned hyperparameters"""
+    
+    print("Isi hp", hp.values)
     vocab_size = get_vocab_size(tf_transform_output)  
     embedding_dim = hp.get('embedding_dim', 128)
     lstm_units = hp.get('lstm_units', 128)
